@@ -1,0 +1,15 @@
+.App {
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+.product-card {
+  margin-bottom: 20px;
+}
+
+.cart-item, .order-item {
+  margin-bottom: 15px;
+}

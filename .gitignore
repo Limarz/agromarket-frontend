@@ -1,0 +1,17 @@
+# Visual Studio files
+.vs/
+*.suo
+*.user
+
+# Build output
+bin/
+obj/
+
+# Other temporary files
+*.log
+*.cache
+
+node_modules/
+.env
+build/
+dist/
