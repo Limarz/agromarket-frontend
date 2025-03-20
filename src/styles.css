@@ -1,8 +1,7 @@
 /* Общие стили */
 body {
   font-family: 'Roboto', sans-serif;
-  background-image: url('/background.jpg');  background-size: cover;
-  background-attachment: fixed;
+  background-image: url('../public/background.jpg');  background-attachment: fixed;
   background-position: center;
   color: #333;
 }
