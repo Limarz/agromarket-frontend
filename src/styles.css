@@ -1,8 +1,13 @@
 /* Общие стили */
 body {
   font-family: 'Roboto', sans-serif;
-  background-image: url('../public/background.jpg');  background-attachment: fixed;
+  background-image: url('/background.jpg'); /* Исправляем путь */
+  background-attachment: fixed;
   background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  margin: 0;
   color: #333;
 }
 
@@ -10,10 +15,23 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px; /* Увеличиваем отступы для лучшего вида */
+  background-color: rgba(255, 255, 255, 0.95); /* Делаем фон чуть менее прозрачным */
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Центрируем текст */
+}
+
+/* Стили для заголовка и текста */
+.container h1 {
+  font-size: 2.5rem; /* Увеличиваем размер заголовка */
+  color: #2e7d32; /* Цвет, как у навигации */
+  margin-bottom: 20px;
+}
+
+.container p {
+  font-size: 1.2rem;
+  color: #666;
 }
 
 /* Навигация */
