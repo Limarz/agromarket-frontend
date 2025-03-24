@@ -13,10 +13,18 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
   // Логируем куки, которые действительно отправляются в запросе
-  const cookieHeader = config.headers['Cookie'] || '';
+  const cookieHeader = config.headers['Cookie'] || 'Нет куки в заголовках';
   console.log('Отправляемые cookies в заголовке запроса:', cookieHeader);
   return config;
 }, error => {
+  console.error('Ошибка в интерцепторе запроса:', error);
+  return Promise.reject(error);
+});
+
+api.interceptors.response.use(response => {
+  return response;
+}, error => {
+  console.error('Ошибка в ответе от сервера:', error.response ? error.response.status : 'Нет ответа', error.message);
   return Promise.reject(error);
 });
 
