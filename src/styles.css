@@ -2,6 +2,7 @@
 body {
   font-family: 'Roboto', sans-serif;
   background-image: url('../public/background.jpg');  background-attachment: fixed;
+  background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -10,7 +11,7 @@ body {
   color: #333;
 }
 
-/* непрозрачный фон для контента */
+/* Непрозрачный фон для контента */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -19,6 +20,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
+  margin-top: 50px; /* Добавляем отступ сверху */
 }
 
 

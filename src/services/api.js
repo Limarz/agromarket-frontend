@@ -54,17 +54,13 @@ export const getUserActivities = () => api.get('/api/useractivity');
 
 // Админ
 export const getAllUsers = () => api.get('/api/admin/users');
-export const getAllProducts = () => api.get('/api/admin/products'); // Исправлено
-export const createProduct = (data) => api.post('/api/admin/products', data, { // Исправлено
-  headers: { 'Content-Type': 'multipart/form-data' }
-});
-export const updateProduct = (id, data) => api.put(`/api/admin/products/${id}`, data, { // Исправлено
-  headers: { 'Content-Type': 'multipart/form-data' }
-});
-export const deleteProduct = (id) => api.delete(`/api/admin/products/${id}`); // Исправлено
+export const getAllProducts = () => api.get('/api/admin/products');
+export const createProduct = (data) => api.post('/api/admin/products', data);
+export const updateProduct = (id, data) => api.put(`/api/admin/products/${id}`, data);
+export const deleteProduct = (id) => api.delete(`/api/admin/products/${id}`);
 export const getPendingRequests = () => api.get('/api/admin/pending-users');
 export const approveRequest = (data) => api.post('/api/admin/approve-user', data);
-export const deleteUser = (userId) => api.put(`/api/admin/block-user/${userId}`, { block: true }); // Исправлено: используем блокировку вместо удаления
+export const deleteUser = (userId) => api.put(`/api/admin/block-user/${userId}`, { block: true });
 
 // Категории
 export const getCategories = () => api.get('/api/categories');

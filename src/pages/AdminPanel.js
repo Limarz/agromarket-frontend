@@ -86,10 +86,16 @@ const AdminPanel = () => {
       formData.append('stock', productForm.stock);
       formData.append('description', productForm.description);
       if (productForm.image) {
+        console.log('Отправляемый файл:', productForm.image); // Логируем файл
         formData.append('image', productForm.image);
       }
       if (productForm.categoryId) {
         formData.append('categoryId', productForm.categoryId);
+      }
+
+      // Логируем содержимое FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
 
       if (editingProduct) {
@@ -108,6 +114,7 @@ const AdminPanel = () => {
       );
       setProducts(sortedProducts);
     } catch (error) {
+      console.error('Ошибка при отправке:', error.response?.data || error.message);
       setError('Ошибка: ' + (error.response?.data?.message || error.message));
     }
   };
