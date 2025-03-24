@@ -12,7 +12,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-  console.log('Отправляемые cookies:', document.cookie);
+  // Логируем куки, которые действительно отправляются в запросе
+  const cookieHeader = config.headers['Cookie'] || '';
+  console.log('Отправляемые cookies в заголовке запроса:', cookieHeader);
   return config;
 }, error => {
   return Promise.reject(error);
@@ -43,7 +45,7 @@ export const getAllOrders = () => api.get('/api/orders/admin/orders');
 export const updateOrderStatus = (orderId, status) => api.put(`/api/orders/admin/orders/${orderId}/status`, { status });
 
 // Товары
-export const getProducts = () => api.get('/api/admin/products'); // Исправляем маршрут
+export const getProducts = () => api.get('/api/admin/products');
 
 // Профиль
 export const getProfile = () => api.get('/api/users/profile');
