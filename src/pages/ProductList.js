@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { OverlayTrigger, Popover, Button, Accordion } from 'react-bootstrap';
 import { getProducts, addToCart, getCart } from '../services/api';
+import placeholderImage from '../assets/placeholder-image.png'; // Импортируем заглушку
 
 const toastOptions = {
   position: 'top-right',
@@ -14,6 +15,8 @@ const toastOptions = {
   draggable: true,
   theme: 'colored',
 };
+
+const backendBaseUrl = 'https://agromarket-backend-dpj6.onrender.com'; // Базовый URL бэкенда
 
 const ProductList = ({ setCartCount }) => {
   const [products, setProducts] = useState([]);
@@ -30,7 +33,7 @@ const ProductList = ({ setCartCount }) => {
       try {
         const response = await getProducts();
         const data = response.data.$values || response.data;
-        console.log('Products:', data); // Логируем для отладки
+        console.log('Products:', data);
         setProducts(data);
         setFilteredProducts(data);
         const initialQuantities = {};
@@ -47,7 +50,6 @@ const ProductList = ({ setCartCount }) => {
     fetchProducts();
   }, []);
 
-  // Фильтрация товаров
   useEffect(() => {
     let result = products;
     if (searchTerm) {
@@ -61,9 +63,8 @@ const ProductList = ({ setCartCount }) => {
     setFilteredProducts(result);
   }, [searchTerm, filterStock, products]);
 
-  // Группировка товаров по категориям
   const groupedProducts = filteredProducts.reduce((acc, product) => {
-    const category = product.category || 'Без категории'; // Если category null, то "Без категории"
+    const category = product.category || 'Без категории';
     if (!acc[category]) {
       acc[category] = [];
     }
@@ -71,7 +72,6 @@ const ProductList = ({ setCartCount }) => {
     return acc;
   }, {});
 
-  // Сортировка категорий (чтобы "Без категории" была в конце)
   const sortedCategories = Object.keys(groupedProducts).sort((a, b) => {
     if (a === 'Без категории') return 1;
     if (b === 'Без категории') return -1;
@@ -164,27 +164,16 @@ const ProductList = ({ setCartCount }) => {
                     >
                       <div className="card h-100">
                         <div className="card-body d-flex flex-column">
-                          {product.imageUrl ? (
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
-                            />
-                          ) : (
-                            <div
-                              style={{
-                                width: '100%',
-                                height: '150px',
-                                backgroundColor: '#f0f0f0',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginBottom: '10px',
-                              }}
-                            >
-                              Нет изображения
-                            </div>
-                          )}
+                          <img
+                            src={
+                              product.imageUrl && product.imageUrl !== 'public/images/Без изображения.jpg'
+                                ? `${backendBaseUrl}${product.imageUrl}`
+                                : placeholderImage
+                            }
+                            alt={product.name}
+                            style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
+                            onError={(e) => (e.target.src = placeholderImage)}
+                          />
                           <h5 className="card-title">{product.name}</h5>
                           <p className="card-text">Цена: ${product.price}</p>
                           <p className="card-text">В наличии: {product.stock} шт.</p>

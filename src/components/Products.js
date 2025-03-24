@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FaShoppingCart, FaPlus, FaMinus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
-import { OverlayTrigger, Popover, Button } from 'react-bootstrap';
+import { OverlayTrigger, Popover, Button, Accordion } from 'react-bootstrap';
 import { getProducts, addToCart, getCart } from '../services/api';
+import placeholderImage from '../assets/placeholder-image.png'; // Импортируем заглушку
 
 const toastOptions = {
   position: 'top-right',
@@ -14,6 +15,8 @@ const toastOptions = {
   draggable: true,
   theme: 'colored',
 };
+
+const backendBaseUrl = 'https://agromarket-backend-dpj6.onrender.com'; // Базовый URL бэкенда
 
 const ProductList = ({ setCartCount }) => {
   const [products, setProducts] = useState([]);
@@ -30,7 +33,7 @@ const ProductList = ({ setCartCount }) => {
       try {
         const response = await getProducts();
         const data = response.data.$values || response.data;
-        console.log('Products:', data); // Логируем для отладки
+        console.log('Products:', data);
         setProducts(data);
         setFilteredProducts(data);
         const initialQuantities = {};
@@ -59,6 +62,21 @@ const ProductList = ({ setCartCount }) => {
     }
     setFilteredProducts(result);
   }, [searchTerm, filterStock, products]);
+
+  const groupedProducts = filteredProducts.reduce((acc, product) => {
+    const category = product.category || 'Без категории';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
+
+  const sortedCategories = Object.keys(groupedProducts).sort((a, b) => {
+    if (a === 'Без категории') return 1;
+    if (b === 'Без категории') return -1;
+    return a.localeCompare(b);
+  });
 
   const addToCartHandler = async (productId, stock, quantity) => {
     if (stock === 0) {
@@ -126,90 +144,88 @@ const ProductList = ({ setCartCount }) => {
           </label>
         </div>
       </div>
-      <div className="row">
-        {filteredProducts.length === 0 ? (
-          <div className="alert alert-warning text-center">Товары не найдены.</div>
-        ) : (
-          filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              className="col-md-4 mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <div className="card h-100">
-                <div className="card-body d-flex flex-column">
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: '100%',
-                        height: '150px',
-                        backgroundColor: '#f0f0f0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: '10px',
-                      }}
+
+      {sortedCategories.length === 0 ? (
+        <div className="alert alert-warning text-center">Товары не найдены.</div>
+      ) : (
+        <Accordion defaultActiveKey="0">
+          {sortedCategories.map((category, index) => (
+            <Accordion.Item eventKey={index.toString()} key={category}>
+              <Accordion.Header>{category}</Accordion.Header>
+              <Accordion.Body>
+                <div className="row">
+                  {groupedProducts[category].map((product, productIndex) => (
+                    <motion.div
+                      key={product.id}
+                      className="col-md-4 mb-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: productIndex * 0.1 }}
                     >
-                      Нет изображения
-                    </div>
-                  )}
-                  <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">Цена: ${product.price}</p>
-                  <p className="card-text">В наличии: {product.stock} шт.</p>
-                  <p className="card-text">Категория: {product.category || 'Не указана'}</p>
-                  <div className="mt-auto">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <OverlayTrigger
-                        trigger="click"
-                        placement="right"
-                        overlay={renderPopover(product)}
-                        rootClose
-                      >
-                        <Button variant="primary">Подробнее</Button>
-                      </OverlayTrigger>
-                      <div className="d-flex align-items-center">
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => updateQuantity(product.id, -1, product.stock)}
-                          disabled={quantities[product.id] <= 1}
-                        >
-                          <FaMinus />
-                        </Button>
-                        <span className="mx-2">{quantities[product.id]}</span>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => updateQuantity(product.id, 1, product.stock)}
-                          disabled={quantities[product.id] >= product.stock}
-                        >
-                          <FaPlus />
-                        </Button>
+                      <div className="card h-100">
+                        <div className="card-body d-flex flex-column">
+                          <img
+                            src={
+                              product.imageUrl && product.imageUrl !== 'Без изображения'
+                                ? `${backendBaseUrl}${product.imageUrl}`
+                                : placeholderImage
+                            }
+                            alt={product.name}
+                            style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
+                            onError={(e) => (e.target.src = placeholderImage)}
+                          />
+                          <h5 className="card-title">{product.name}</h5>
+                          <p className="card-text">Цена: ${product.price}</p>
+                          <p className="card-text">В наличии: {product.stock} шт.</p>
+                          <div className="mt-auto">
+                            <div className="d-flex justify-content-between align-items-center mb-2">
+                              <OverlayTrigger
+                                trigger="click"
+                                placement="right"
+                                overlay={renderPopover(product)}
+                                rootClose
+                              >
+                                <Button variant="primary">Подробнее</Button>
+                              </OverlayTrigger>
+                              <div className="d-flex align-items-center">
+                                <Button
+                                  variant="outline-secondary"
+                                  size="sm"
+                                  onClick={() => updateQuantity(product.id, -1, product.stock)}
+                                  disabled={quantities[product.id] <= 1}
+                                >
+                                  <FaMinus />
+                                </Button>
+                                <span className="mx-2">{quantities[product.id]}</span>
+                                <Button
+                                  variant="outline-secondary"
+                                  size="sm"
+                                  onClick={() => updateQuantity(product.id, 1, product.stock)}
+                                  disabled={quantities[product.id] >= product.stock}
+                                >
+                                  <FaPlus />
+                                </Button>
+                              </div>
+                            </div>
+                            <Button
+                              variant="success"
+                              className="w-100"
+                              onClick={() => addToCartHandler(product.id, product.stock, quantities[product.id])}
+                              disabled={product.stock === 0}
+                            >
+                              <FaShoppingCart className="me-2" /> Добавить
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <Button
-                      variant="success"
-                      className="w-100"
-                      onClick={() => addToCartHandler(product.id, product.stock, quantities[product.id])}
-                      disabled={product.stock === 0}
-                    >
-                      <FaShoppingCart className="me-2" /> Добавить
-                    </Button>
-                  </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </div>
-            </motion.div>
-          ))
-        )}
-      </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      )}
     </div>
   );
 };

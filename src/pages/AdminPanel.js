@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { Modal, Button, Form, Accordion } from 'react-bootstrap';
 import { getProfile, getAllUsers, getAllOrders, getAllProducts, createProduct, updateProduct, deleteProduct, getPendingRequests, approveRequest, updateOrderStatus, deleteUser, getCategories } from '../services/api';
+import placeholderImage from '../assets/placeholder-image.png'; // Импортируем заглушку
 
 const toastOptions = {
   position: 'top-right',
@@ -13,6 +14,8 @@ const toastOptions = {
   draggable: true,
   theme: 'colored',
 };
+
+const backendBaseUrl = 'https://agromarket-backend-dpj6.onrender.com'; // Базовый URL бэкенда
 
 const AdminPanel = () => {
   const [user, setUser] = useState(null);
@@ -34,7 +37,7 @@ const AdminPanel = () => {
         const [userResponse, usersResponse, productsResponse, ordersResponse, pendingResponse, categoriesResponse] = await Promise.all([
           getProfile(),
           getAllUsers(),
-          getAllProducts(), // Используем getAllProducts для нового маршрута /api/admin/all-products
+          getAllProducts(),
           getAllOrders(),
           getPendingRequests(),
           getCategories(),
@@ -86,14 +89,13 @@ const AdminPanel = () => {
       formData.append('stock', productForm.stock);
       formData.append('description', productForm.description);
       if (productForm.image) {
-        console.log('Отправляемый файл:', productForm.image); // Логируем файл
+        console.log('Отправляемый файл:', productForm.image);
         formData.append('image', productForm.image);
       }
       if (productForm.categoryId) {
         formData.append('categoryId', productForm.categoryId);
       }
 
-      // Логируем содержимое FormData
       for (let [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
@@ -108,7 +110,7 @@ const AdminPanel = () => {
       setShowProductModal(false);
       setEditingProduct(null);
       setProductForm({ name: '', price: 0, stock: 0, description: '', image: null, categoryId: null });
-      const productsResponse = await getAllProducts(); // Обновляем список через новый маршрут
+      const productsResponse = await getAllProducts();
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
         new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       );
@@ -123,7 +125,7 @@ const AdminPanel = () => {
     try {
       await deleteProduct(id);
       toast.success('Товар удалён!', toastOptions);
-      const productsResponse = await getAllProducts(); // Обновляем список через новый маршрут
+      const productsResponse = await getAllProducts();
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
         new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       );
@@ -195,27 +197,16 @@ const AdminPanel = () => {
                 <div key={product.id} className="col-md-4 mb-3">
                   <div className="card">
                     <div className="card-body">
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '100%',
-                            height: '150px',
-                            backgroundColor: '#f0f0f0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginBottom: '10px',
-                          }}
-                        >
-                          Нет изображения
-                        </div>
-                      )}
+                      <img
+                        src={
+                          product.imageUrl && product.imageUrl !== 'public/images/Без изображения.jpg'
+                            ? `${backendBaseUrl}${product.imageUrl}`
+                            : placeholderImage
+                        }
+                        alt={product.name}
+                        style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
+                        onError={(e) => (e.target.src = placeholderImage)}
+                      />
                       <h5 className="card-title">{product.name}</h5>
                       <p>Цена: ${product.price}</p>
                       <p>В наличии: {product.stock} шт.</p>
@@ -405,9 +396,14 @@ const AdminPanel = () => {
                 <div className="mt-2">
                   <p>Текущее изображение:</p>
                   <img
-                    src={editingProduct.imageUrl}
+                    src={
+                      editingProduct.imageUrl && editingProduct.imageUrl !== 'public/images/Без изображения.jpg'
+                        ? `${backendBaseUrl}${editingProduct.imageUrl}`
+                        : placeholderImage
+                    }
                     alt="Текущее изображение"
                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                    onError={(e) => (e.target.src = placeholderImage)}
                   />
                 </div>
               )}
