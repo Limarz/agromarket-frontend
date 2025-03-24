@@ -34,7 +34,7 @@ const AdminPanel = () => {
         const [userResponse, usersResponse, productsResponse, ordersResponse, pendingResponse, categoriesResponse] = await Promise.all([
           getProfile(),
           getAllUsers(),
-          getAllProducts(),
+          getAllProducts(), // Используем getAllProducts для нового маршрута /api/admin/all-products
           getAllOrders(),
           getPendingRequests(),
           getCategories(),
@@ -108,7 +108,7 @@ const AdminPanel = () => {
       setShowProductModal(false);
       setEditingProduct(null);
       setProductForm({ name: '', price: 0, stock: 0, description: '', image: null, categoryId: null });
-      const productsResponse = await getAllProducts();
+      const productsResponse = await getAllProducts(); // Обновляем список через новый маршрут
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
         new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       );
@@ -123,7 +123,7 @@ const AdminPanel = () => {
     try {
       await deleteProduct(id);
       toast.success('Товар удалён!', toastOptions);
-      const productsResponse = await getAllProducts();
+      const productsResponse = await getAllProducts(); // Обновляем список через новый маршрут
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
         new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       );

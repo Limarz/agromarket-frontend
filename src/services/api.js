@@ -48,7 +48,8 @@ export const getAllOrders = () => api.get('/api/orders/admin/orders');
 export const updateOrderStatus = (orderId, status) => api.put(`/api/orders/admin/orders/${orderId}/status`, { status });
 
 // Товары
-export const getProducts = () => api.get('/api/admin/products');
+export const getProducts = () => api.get('/api/admin/products'); // Для ProductsController
+export const getAllProducts = () => api.get('/api/admin/all-products'); // Для AdminController
 
 // Профиль
 export const getProfile = () => api.get('/api/users/profile');
@@ -59,7 +60,6 @@ export const getUserActivities = () => api.get('/api/useractivity');
 
 // Админ
 export const getAllUsers = () => api.get('/api/admin/users');
-export const getAllProducts = () => api.get('/api/admin/products');
 export const createProduct = (data) => api.post('/api/admin/products', data);
 export const updateProduct = (id, data) => api.put(`/api/admin/products/${id}`, data);
 export const deleteProduct = (id) => api.delete(`/api/admin/products/${id}`);
