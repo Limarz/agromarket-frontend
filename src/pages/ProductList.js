@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { OverlayTrigger, Popover, Button, Accordion } from 'react-bootstrap';
 import { getProducts, addToCart, getCart } from '../services/api';
-import placeholderImage from '../assets/placeholder-image.png'; // Импортируем заглушку
 
 const toastOptions = {
   position: 'top-right',
@@ -166,13 +165,13 @@ const ProductList = ({ setCartCount }) => {
                         <div className="card-body d-flex flex-column">
                           <img
                             src={
-                              product.imageUrl && product.imageUrl !== 'public/images/Без изображения.jpg'
+                              product.imageUrl
                                 ? `${backendBaseUrl}${product.imageUrl}`
-                                : placeholderImage
+                                : '/images/placeholder.jpg'
                             }
                             alt={product.name}
                             style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
-                            onError={(e) => (e.target.src = placeholderImage)}
+                            onError={(e) => (e.target.src = '/images/placeholder.jpg')}
                           />
                           <h5 className="card-title">{product.name}</h5>
                           <p className="card-text">Цена: ${product.price}</p>

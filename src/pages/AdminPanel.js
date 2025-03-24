@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { Modal, Button, Form, Accordion } from 'react-bootstrap';
 import { getProfile, getAllUsers, getAllOrders, getAllProducts, createProduct, updateProduct, deleteProduct, getPendingRequests, approveRequest, updateOrderStatus, deleteUser, getCategories } from '../services/api';
-import placeholderImage from '../assets/placeholder-image.png'; // Импортируем заглушку
 
 const toastOptions = {
   position: 'top-right',
@@ -199,13 +198,13 @@ const AdminPanel = () => {
                     <div className="card-body">
                       <img
                         src={
-                          product.imageUrl && product.imageUrl !== 'public/images/Без изображения.jpg'
+                          product.imageUrl
                             ? `${backendBaseUrl}${product.imageUrl}`
-                            : placeholderImage
+                            : '/images/placeholder.jpg'
                         }
                         alt={product.name}
                         style={{ width: '100%', height: '150px', objectFit: 'cover', marginBottom: '10px' }}
-                        onError={(e) => (e.target.src = placeholderImage)}
+                        onError={(e) => (e.target.src = '/images/placeholder.jpg')}
                       />
                       <h5 className="card-title">{product.name}</h5>
                       <p>Цена: ${product.price}</p>
@@ -397,13 +396,13 @@ const AdminPanel = () => {
                   <p>Текущее изображение:</p>
                   <img
                     src={
-                      editingProduct.imageUrl && editingProduct.imageUrl !== 'public/images/Без изображения.jpg'
+                      editingProduct.imageUrl
                         ? `${backendBaseUrl}${editingProduct.imageUrl}`
-                        : placeholderImage
+                        : '/images/placeholder.jpg'
                     }
                     alt="Текущее изображение"
                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                    onError={(e) => (e.target.src = placeholderImage)}
+                    onError={(e) => (e.target.src = '/images/placeholder.jpg')}
                   />
                 </div>
               )}
