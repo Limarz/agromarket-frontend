@@ -43,7 +43,7 @@ export const getAllOrders = () => api.get('/api/orders/admin/orders');
 export const updateOrderStatus = (orderId, status) => api.put(`/api/orders/admin/orders/${orderId}/status`, { status });
 
 // Товары
-export const getProducts = () => api.get('/api/products');
+export const getProducts = () => api.get('/api/admin/products'); // Исправляем маршрут
 
 // Профиль
 export const getProfile = () => api.get('/api/users/profile');
