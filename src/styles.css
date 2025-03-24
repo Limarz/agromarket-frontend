@@ -10,16 +10,17 @@ body {
   color: #333;
 }
 
-/* Полупрозрачный фон для контента */
+/* непрозрачный фон для контента */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px; /* Увеличиваем отступы для лучшего вида */
-  background-color: rgba(255, 255, 255, 0.95); /* Делаем фон чуть менее прозрачным */
+  padding: 40px;
+  background-color: #ffffff; /* Полностью белый фон */
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  text-align: center; /* Центрируем текст */
+  text-align: center;
 }
+
 
 /* Стили для заголовка и текста */
 .container h1 {
