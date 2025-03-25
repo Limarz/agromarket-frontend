@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ProductList from './pages/ProductList';
@@ -12,6 +11,7 @@ import UserProfile from './pages/UserProfile';
 import UserActivity from './pages/UserActivity';
 import AdminPanel from './pages/AdminPanel';
 import { checkSession, logout } from './services/api';
+import './index.css'; // Убедитесь, что CSS импортируется
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,7 +19,6 @@ function App() {
   const [cartCount, setCartCount] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
   const [role, setRole] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -60,107 +59,79 @@ function App() {
     }
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   return (
     <Router>
       <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar">
           <div className="container-fluid">
-            <button
-              className="navbar-brand btn btn-link"
-              onClick={toggleMenu}
-              style={{ padding: 0, fontSize: '1.5rem', color: '#f0f0f0', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}
+            <Link
+              className="navbar-brand"
+              to="/"
+              style={{
+                fontSize: '1.5rem',
+                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+              }}
             >
               AgroMarket
-            </button>
-            <AnimatePresence>
-              {isMenuOpen && (
-                <motion.div
-                  className="navbar-collapse"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ul className="navbar-nav me-auto">
-                    <motion.li
-                      className="nav-item"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.1 }}
-                    >
-                      <Link className="nav-link" to="/" onClick={toggleMenu}>Главная</Link>
-                    </motion.li>
-                    <motion.li
-                      className="nav-item"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      <Link className="nav-link" to="/products" onClick={toggleMenu}>Товары</Link>
-                    </motion.li>
-                    <motion.li
-                      className="nav-item"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                    >
-                      <Link className="nav-link" to="/cart" onClick={toggleMenu}>Корзина ({cartCount})</Link>
-                    </motion.li>
-                    <motion.li
-                      className="nav-item"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                    >
-                      <Link className="nav-link" to="/orders" onClick={toggleMenu}>Заказы ({orderCount})</Link>
-                    </motion.li>
-                    {isAuthenticated && (
-                      <>
-                        <motion.li
-                          className="nav-item"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.5 }}
-                        >
-                          <Link className="nav-link" to="/profile" onClick={toggleMenu}>Профиль</Link>
-                        </motion.li>
-                        <motion.li
-                          className="nav-item"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.6 }}
-                        >
-                          <Link className="nav-link" to="/activity" onClick={toggleMenu}>Активность</Link>
-                        </motion.li>
-                        {(role === 'Admin' || role?.name === 'Admin') && (
-                          <motion.li
-                            className="nav-item"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7 }}
-                          >
-                            <Link className="nav-link" to="/admin" onClick={toggleMenu}>Админ-панель</Link>
-                          </motion.li>
-                        )}
-                      </>
+            </Link>
+            <div className="d-flex flex-wrap align-items-center">
+              <ul className="nav-links">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    Главная
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/products">
+                    Товары
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/cart">
+                    Корзина ({cartCount})
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/orders">
+                    Заказы ({orderCount})
+                  </Link>
+                </li>
+                {isAuthenticated && (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/profile">
+                        Профиль
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/activity">
+                        Активность
+                      </Link>
+                    </li>
+                    {(role === 'Admin' || role?.name === 'Admin') && (
+                      <li className="nav-item">
+                        <Link className="nav-link" to="/admin">
+                          Админ-панель
+                        </Link>
+                      </li>
                     )}
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div className="d-flex align-items-center">
-              {isAuthenticated ? (
-                <>
-                  <span className="me-3">Привет, {username}!</span>
-                  <button className="btn btn-outline-danger" onClick={handleLogout}>Выйти</button>
-                </>
-              ) : (
-                <Link className="btn btn-outline-primary" to="/login">Войти</Link>
-              )}
+                  </>
+                )}
+              </ul>
+              <div className="d-flex align-items-center">
+                {isAuthenticated ? (
+                  <>
+                    <span className="me-3">Привет, {username}!</span>
+                    <button className="btn btn-danger" onClick={handleLogout}>
+                      Выйти
+                    </button>
+                  </>
+                ) : (
+                  <Link className="btn btn-outline-light" to="/login">
+                    Войти
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </nav>

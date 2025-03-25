@@ -37,16 +37,19 @@ li {
 
 /* Стили для навигации */
 .navbar {
-  background-color: #333;
+  background-color: #007bff; /* Синий фон */
   padding: 10px;
   position: relative;
 }
 
-.burger {
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
-  display: none; /* Скрываем на больших экранах */
+.navbar-brand {
+  color: #ffffff !important; /* Белый цвет для логотипа */
+  font-size: 1.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand:hover {
+  color: #e0e0e0 !important; /* Светло-серый при наведении */
 }
 
 .nav-links {
@@ -60,7 +63,7 @@ li {
 }
 
 .nav-links a, .nav-links button {
-  color: white;
+  color: #ffffff; /* Белый цвет текста */
   text-decoration: none;
   background: none;
   border: none;
@@ -68,27 +71,24 @@ li {
 }
 
 .nav-links a:hover, .nav-links button:hover {
-  color: #007bff;
+  color: #e0e0e0; /* Светло-серый при наведении */
+}
+
+/* Стили для приветствия */
+.d-flex.align-items-center span {
+  color: #ffffff; /* Белый цвет для текста приветствия */
 }
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-  .burger {
-    display: block;
-  }
-
   .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    background-color: #333;
-    width: 100%;
-    padding: 10px 0;
-  }
-
-  .nav-links.open {
-    display: flex;
+    display: flex; /* Всегда показываем меню */
+    flex-direction: row; /* Горизонтальное расположение */
+    flex-wrap: wrap; /* Перенос на следующую строку, если не помещается */
+    gap: 10px; /* Уменьшенный отступ для мобильных */
+    position: static; /* Убираем абсолютное позиционирование */
+    background-color: transparent; /* Убираем фон */
+    width: auto; /* Убираем фиксированную ширину */
+    padding: 0;
   }
 }
