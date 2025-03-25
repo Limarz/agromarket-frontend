@@ -61,7 +61,17 @@ export const getUserActivities = () => api.get('/api/useractivity');
 // Админ
 export const getAllUsers = () => api.get('/api/admin/users');
 export const createProduct = (data) => api.post('/api/admin/products', data);
-export const updateProduct = (id, data) => api.put(`/api/admin/products/${id}`, data);
+export const updateProduct = (id, data) => {
+  console.log('Отправляемые данные в updateProduct:', data); // Добавляем логирование
+  for (let [key, value] of data.entries()) {
+    console.log(`updateProduct - ${key}:`, value);
+  }
+  return api.put(`/api/admin/products/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
 export const deleteProduct = (id) => api.delete(`/api/admin/products/${id}`);
 export const getPendingRequests = () => api.get('/api/admin/pending-users');
 export const approveRequest = (data) => api.post('/api/admin/approve-user', data);

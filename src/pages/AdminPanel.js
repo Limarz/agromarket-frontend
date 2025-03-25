@@ -14,8 +14,6 @@ const toastOptions = {
   theme: 'colored',
 };
 
-const backendBaseUrl = 'https://agromarket-backend-dpj6.onrender.com'; // Базовый URL бэкенда
-
 const AdminPanel = () => {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -82,17 +80,22 @@ const AdminPanel = () => {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Проверяем, что name не пустое
+      if (!productForm.name || productForm.name.trim() === '') {
+        throw new Error('Название товара обязательно.');
+      }
+
       const formData = new FormData();
       formData.append('name', productForm.name);
-      formData.append('price', productForm.price);
-      formData.append('stock', productForm.stock);
-      formData.append('description', productForm.description);
+      formData.append('price', productForm.price.toString());
+      formData.append('stock', productForm.stock.toString());
+      formData.append('description', productForm.description || '');
       if (productForm.image) {
         console.log('Отправляемый файл:', productForm.image);
         formData.append('image', productForm.image);
       }
       if (productForm.categoryId) {
-        formData.append('categoryId', productForm.categoryId);
+        formData.append('categoryId', productForm.categoryId.toString());
       }
 
       for (let [key, value] of formData.entries()) {
@@ -111,7 +114,7 @@ const AdminPanel = () => {
       setProductForm({ name: '', price: 0, stock: 0, description: '', image: null, categoryId: null });
       const productsResponse = await getAllProducts();
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || [])
-        .filter(product => product.name) // Фильтруем записи с пустым Name
+        .filter(product => product.name)
         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       setProducts(sortedProducts);
     } catch (error) {
@@ -126,7 +129,7 @@ const AdminPanel = () => {
       toast.success('Товар удалён!', toastOptions);
       const productsResponse = await getAllProducts();
       const sortedProducts = (productsResponse.data.$values || productsResponse.data || [])
-        .filter(product => product.name) // Фильтруем записи с пустым Name
+        .filter(product => product.name)
         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       setProducts(sortedProducts);
     } catch (error) {
@@ -199,7 +202,7 @@ const AdminPanel = () => {
                       <img
                         src={
                           product.imageUrl
-                            ? `${backendBaseUrl}${product.imageUrl}`
+                            ? product.imageUrl // Используем imageUrl напрямую
                             : '/images/placeholder.jpg'
                         }
                         alt={product.name}
@@ -397,7 +400,7 @@ const AdminPanel = () => {
                   <img
                     src={
                       editingProduct.imageUrl
-                        ? `${backendBaseUrl}${editingProduct.imageUrl}`
+                        ? editingProduct.imageUrl // Используем imageUrl напрямую
                         : '/images/placeholder.jpg'
                     }
                     alt="Текущее изображение"

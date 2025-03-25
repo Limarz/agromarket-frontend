@@ -15,8 +15,6 @@ const toastOptions = {
   theme: 'colored',
 };
 
-const backendBaseUrl = 'https://agromarket-backend-dpj6.onrender.com'; // Базовый URL бэкенда
-
 const ProductList = ({ setCartCount }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -32,7 +30,7 @@ const ProductList = ({ setCartCount }) => {
       try {
         const response = await getProducts();
         const data = (response.data.$values || response.data)
-          .filter(product => product.name); // Фильтруем записи с пустым Name
+          .filter(product => product.name);
         console.log('Products:', data);
         setProducts(data);
         setFilteredProducts(data);
@@ -167,7 +165,7 @@ const ProductList = ({ setCartCount }) => {
                           <img
                             src={
                               product.imageUrl
-                                ? `${backendBaseUrl}${product.imageUrl}`
+                                ? product.imageUrl // Используем imageUrl напрямую
                                 : '/images/placeholder.jpg'
                             }
                             alt={product.name}
