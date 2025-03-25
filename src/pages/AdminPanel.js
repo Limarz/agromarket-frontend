@@ -54,9 +54,9 @@ const AdminPanel = () => {
         );
         setUsers(sortedUsers);
 
-        const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
-          new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-        );
+        const sortedProducts = (productsResponse.data.$values || productsResponse.data || [])
+          .filter(product => product.name) // Фильтруем записи с пустым Name
+          .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
         setProducts(sortedProducts);
 
         const sortedOrders = (ordersResponse.data.$values || ordersResponse.data || []).sort((a, b) =>
@@ -110,9 +110,9 @@ const AdminPanel = () => {
       setEditingProduct(null);
       setProductForm({ name: '', price: 0, stock: 0, description: '', image: null, categoryId: null });
       const productsResponse = await getAllProducts();
-      const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
-        new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-      );
+      const sortedProducts = (productsResponse.data.$values || productsResponse.data || [])
+        .filter(product => product.name) // Фильтруем записи с пустым Name
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       setProducts(sortedProducts);
     } catch (error) {
       console.error('Ошибка при отправке:', error.response?.data || error.message);
@@ -125,9 +125,9 @@ const AdminPanel = () => {
       await deleteProduct(id);
       toast.success('Товар удалён!', toastOptions);
       const productsResponse = await getAllProducts();
-      const sortedProducts = (productsResponse.data.$values || productsResponse.data || []).sort((a, b) =>
-        new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-      );
+      const sortedProducts = (productsResponse.data.$values || productsResponse.data || [])
+        .filter(product => product.name) // Фильтруем записи с пустым Name
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       setProducts(sortedProducts);
     } catch (error) {
       setError('Ошибка удаления товара: ' + (error.response?.data?.message || error.message));

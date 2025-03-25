@@ -31,7 +31,8 @@ const ProductList = ({ setCartCount }) => {
       setIsLoading(true);
       try {
         const response = await getProducts();
-        const data = response.data.$values || response.data;
+        const data = (response.data.$values || response.data)
+          .filter(product => product.name); // Фильтруем записи с пустым Name
         console.log('Products:', data);
         setProducts(data);
         setFilteredProducts(data);
