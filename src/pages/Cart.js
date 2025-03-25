@@ -4,11 +4,18 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import DatePicker from 'react-datepicker'; // Импорт DatePicker
+import { registerLocale } from 'react-datepicker'; // Для локализации
+import ru from 'date-fns/locale/ru'; // Русская локализация
 import TimeSlotSelector from '../components/TimeSlotSelector';
 import { getCart, updateCartItem, removeFromCart, clearCart, createOrder, getOrders } from '../services/api';
 
-// Импортируем стили для react-leaflet
+// Импортируем стили для react-leaflet и react-datepicker
 import 'leaflet/dist/leaflet.css';
+import 'react-datepicker/dist/react-datepicker.css';
+
+// Регистрируем русскую локализацию для DatePicker
+registerLocale('ru', ru);
 
 const toastOptions = {
   position: 'top-right',
@@ -36,10 +43,11 @@ const Cart = ({ setCartCount, setOrderCount }) => {
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [deliveryLocation, setDeliveryLocation] = useState([55.7558, 37.6173]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  const [isClient, setIsClient] = useState(false); // Для рендеринга карты только на клиенте
+  const [selectedDate, setSelectedDate] = useState(null); // Новое состояние для даты доставки
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // Устанавливаем, что мы на клиенте
+    setIsClient(true);
     const fetchCart = async () => {
       setIsLoading(true);
       try {
@@ -119,8 +127,8 @@ const Cart = ({ setCartCount, setOrderCount }) => {
   };
 
   const createOrderHandler = async () => {
-    if (!deliveryAddress || !selectedTimeSlot) {
-      toast.error('Выберите адрес и время доставки!', toastOptions);
+    if (!deliveryAddress || !selectedTimeSlot || !selectedDate) {
+      toast.error('Выберите адрес, дату и время доставки!', toastOptions);
       return;
     }
     try {
@@ -128,6 +136,7 @@ const Cart = ({ setCartCount, setOrderCount }) => {
         deliveryAddress,
         deliveryLocation: { latitude: deliveryLocation[0], longitude: deliveryLocation[1] },
         deliveryTimeSlot: selectedTimeSlot,
+        deliveryDate: selectedDate.toISOString(), // Передаём дату в формате ISO
       });
       toast.success('Заказ создан!', toastOptions);
       setCart({ items: [] });
@@ -262,7 +271,6 @@ const Cart = ({ setCartCount, setOrderCount }) => {
           <button className="btn btn-primary" onClick={searchAddress}>Найти</button>
         </div>
         <button className="btn btn-secondary mb-3" onClick={detectLocation}>Определить местоположение</button>
-        {/* Ограничиваем размер карты */}
         <div style={{ height: '300px', width: '100%', maxWidth: '800px', margin: '0 auto' }}>
           {isClient && (
             <MapContainer center={deliveryLocation} zoom={13} style={{ height: '100%', width: '100%' }}>
@@ -276,6 +284,23 @@ const Cart = ({ setCartCount, setOrderCount }) => {
           )}
         </div>
       </div>
+      {/* Добавляем выбор даты доставки */}
+      <div className="date-section mb-4">
+        <h3 className="text-center mb-3">Выберите дату доставки</h3>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            minDate={new Date()} // Нельзя выбрать дату раньше сегодняшней
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Выберите дату"
+            locale="ru"
+            showDisabledMonthNavigation
+            className="form-control"
+            style={{ width: '200px' }}
+          />
+        </div>
+      </div>
       <div className="time-slot-section mb-4">
         <h3 className="text-center mb-3">Выберите время доставки</h3>
         <TimeSlotSelector onSelectTimeSlot={setSelectedTimeSlot} />
@@ -285,6 +310,12 @@ const Cart = ({ setCartCount, setOrderCount }) => {
         <button className="btn btn-danger me-2" onClick={clearCartHandler}>Очистить корзину</button>
         <button className="btn btn-success" onClick={createOrderHandler}>Создать заказ</button>
       </div>
+      {/* Отображение выбранных даты и времени */}
+      {selectedDate && selectedTimeSlot && (
+        <p className="text-center mt-3">
+          Доставка запланирована на {selectedDate.toLocaleDateString('ru-RU')} в {selectedTimeSlot}
+        </p>
+      )}
     </motion.div>
   );
 };

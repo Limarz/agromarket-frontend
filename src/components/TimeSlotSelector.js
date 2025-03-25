@@ -21,18 +21,34 @@ const TimeSlotSelector = ({ onSelectTimeSlot }) => {
   };
 
   return (
-    <div className="time-slot-container d-flex justify-content-center flex-wrap gap-3">
+    <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px' }}>
       {timeSlots.map(slot => (
         <button
           key={slot.id}
-          className={`time-slot btn ${
-            slot.available ? 'btn-outline-primary' : 'btn-outline-secondary disabled'
-          } ${selectedSlot === slot.time ? 'selected' : ''}`}
           onClick={() => handleSelectSlot(slot)}
           disabled={!slot.available}
+          style={{
+            margin: '5px',
+            padding: '10px 15px',
+            backgroundColor:
+              selectedSlot === slot.time
+                ? '#28a745' // Зелёный для выбранного слота
+                : slot.available
+                ? '#007bff' // Синий для доступных слотов
+                : '#d3d3d3', // Серый для занятых
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: slot.available ? 'pointer' : 'not-allowed',
+            transition: 'background-color 0.3s', // Плавный переход цвета
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+          }}
         >
           {slot.time}
-          {!slot.available && <span className="ms-2 text-danger">(Занято)</span>}
+          {!slot.available && <span style={{ color: '#ff4d4f', marginLeft: '5px' }}>(Занято)</span>}
         </button>
       ))}
     </div>

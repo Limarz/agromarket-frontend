@@ -60,10 +60,11 @@ const Orders = ({ setOrderCount }) => {
         {orders.map(order => (
           <li key={order.id} className="list-group-item">
             <p>Заказ #{order.id}</p>
-            <p>Дата: {new Date(order.orderDate).toLocaleString()}</p>
+            <p>Дата заказа: {new Date(order.orderDate).toLocaleString()}</p>
             <p>Сумма: ${order.totalAmount}</p>
             <p>Статус: {order.status}</p>
             <p>Адрес доставки: {order.deliveryAddress || 'Не указан'}</p>
+            <p>Дата доставки: {order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString('ru-RU') : 'Не указана'}</p>
             <p>Время доставки: {order.deliveryTimeSlot || 'Не указано'}</p>
             {order.status === 'Pending' && (
               <button
